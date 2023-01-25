@@ -69,8 +69,8 @@
 # Icareus OTT/Video Platform - Mikko (terraform script to install docker / make a container up)
 
 ### Prerequisites are : 
-   • Create your project docker images
-   • Push the image to your docker hub repository
-   • Storing docker hub password in a file here (password.txt)
+   * Create your project docker images
+   * Push the image to your docker hub repository
+   * Storing docker hub password in a file here (password.txt)
 
 
