@@ -73,4 +73,98 @@
    * Push the image to your docker hub repository
    * Storing docker hub password in a file here (password.txt)
 
+![image](https://user-images.githubusercontent.com/90750345/214501454-02e9f846-cac2-4328-a0d6-adb1bc2079a7.png)
+
+   * Creating a script file here (container.sh)
+   
+   ![image](https://user-images.githubusercontent.com/90750345/214502271-01caa83e-1e54-478c-bbc4-acd481246177.png)
+ 
+         #!/bin/bash
+         cat ~/password.txt | sudo docker login --username name --password-stdin
+         sudo docker pull username/imagename:version
+         sudo docker run -d -p 8080:8080 username/imagename:version
+
+   * eating a script with docker installation command (docker.sh)
+   
+   ![image](https://user-images.githubusercontent.com/90750345/214502498-4931c13f-c3e2-4724-ac64-71d33f8750a8.png)
+
+   
+    #!/bin/bash
+    set -ex
+    sudo yum update -y
+    sudo amazon-linux-extras install docker -y
+    sudo service docker start
+    sudo usermod -a -G docker ec2-user
+    sudo curl -L https://github.com/docker/compose/releases/download/1.25.4/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+    
+   ## Create a .tf file with below contents
+   
+      resource "aws_instance" "docker" {
+        ami           = "ami-0b5eea76982371e91"
+        instance_type = "t2.micro"
+        key_name = "OTT"
+        security_groups = [ "OTT" ]
+        user_data = file("docker.sh")
+
+        root_block_device {
+          volume_size = 8
+        }
+
+        tags = {
+          Name = "Docker"
+        }
+
+      }
+
+      resource "null_resource" "docker" {
+
+      # ssh into the server
+        connection {
+
+          type  = "ssh"
+          user  = "ec2-user"
+          private_key = file ("~/terraform/aws/OTT.pem")
+          host  =  aws_instance.docker.public_ip
+
+        }
+
+
+      #importing docker password into instance
+        provisioner "file" {
+
+          source = "password.txt"
+          destination = "/home/ec2-user/password.txt"
+
+        }
+
+      #importing sh to login docker /pull/run the docker image 
+        provisioner "file" {
+
+          source = "container.sh"
+          destination = "/home/ec2-user/container.sh"
+
+        }
+
+      # to run command inside the instance
+        provisioner "remote-exec" { 
+          inline = [      
+            "sudo chmod +x /home/ec2-user/container.sh",
+            "sh /home/ec2-user/container.sh",
+          ]
+        }
+
+      #creating dependency on instance
+        depends_on = [aws_instance.docker]
+
+      }
+
+### output in Instance 
+ 
+![image](https://user-images.githubusercontent.com/90750345/214502857-eb469033-de0e-40b9-a745-c4cfd8ecc3f2.png)
+
+---------------------------------------------------------------------------------
+
+
+
 
