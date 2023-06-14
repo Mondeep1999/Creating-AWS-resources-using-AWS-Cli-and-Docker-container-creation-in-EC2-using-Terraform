@@ -1,4 +1,4 @@
-# Icareus-OTT-Video-Platform-aws-terraform
+# Docker-container-creation in EC2 using terraform
    ### Connecting with IAM user  to awsCLI
    #### Command: 
       aws configure –profile profile-name
