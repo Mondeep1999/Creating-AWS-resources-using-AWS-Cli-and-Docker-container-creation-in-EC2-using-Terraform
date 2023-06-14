@@ -1,4 +1,4 @@
-# Docker-container-creation in EC2 using terraform
+# Creating AWS resources using AWS Cli and Docker-container-creation in EC2 using Terraform
    ### Connecting with IAM user  to awsCLI
    #### Command: 
       aws configure –profile profile-name
@@ -66,7 +66,7 @@
 #### Command : 
     aws autoscaling create-auto-scaling-group --auto-scaling-group-name ott-autoscale --launch-template LaunchTemplateId=lt-03dcba521360869c1,Version='$Latest' --min-size 1 --max-size 5 --desired-capacity 3 --vpc-zone-identifier "subnet-08cb168de3c6d9514" --profile OTT-demo
     
-# Icareus OTT/Video Platform - Mikko (terraform script to install docker / make a container up)
+# Terraform script to install docker / make a container up
 
 ### Prerequisites are : 
    * Create your project docker images
